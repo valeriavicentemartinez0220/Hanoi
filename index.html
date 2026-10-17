@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Torres de Hanoi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<main>
+<h1>La recursividad en las torres de Hanoi</h1>
+<p class="lead">INTEGRANTES: Valeria Vicente, Aleph de Jesus, Edwin Jafet.</p>
+<nav>
+  <a href="#a">A. Problema</a><a href="#b">B. Caso base</a><a href="#c">C. Recursión</a><a href="#d">D. Código</a><a href="#e">E. Prueba</a>
+</nav>
+
+<section id="a">
+<h2>A. Planteamiento del problema</h2>
+<p>Hay tres postes (A, B y C) y n discos de distinto tamaño, apilados en A con el más grande abajo. El objetivo es llevar toda la pila al poste C.</p>
+<ul class="rules">
+<li>Solo se mueve un disco a la vez.</li>
+<li>Solo se puede mover el disco de arriba de un poste.</li>
+<li>Nunca se coloca un disco grande sobre uno más pequeño.</li>
+</ul>
+<p>Pregunta clave: ¿cómo se resuelve con n discos sin saber de antemano todos los movimientos?</p>
+</section>
+
+<section id="b">
+<h2>B. Caso base</h2>
+<p>Toda recursión necesita un punto donde se detiene. Aquí es el problema más pequeño posible: <b>n = 0</b>, es decir, cero discos. No hay nada que mover, así que la función simplemente regresa.</p>
+<p class="big">Sin caso base la función se llamaría para siempre y el programa se rompería con un StackOverflowError.</p>
+<p>Con un solo disco (n = 1) tampoco hay misterio: se mueve directo de origen a destino. Internamente, lo hace llamando dos veces al caso base y moviendo en medio.</p>
+</section>
+
+<section id="c">
+<h2>C. Cómo funciona el método recursivo</h2>
+<p>La idea: para mover n discos de origen a destino, se reduce a un problema igual pero con un disco menos.</p>
+<p class="big">1) Mueve los n−1 discos de arriba al poste auxiliar.<br>2) Mueve el disco más grande al destino.<br>3) Mueve los n−1 discos del auxiliar al destino.</p>
+<p>Los pasos 1 y 3 son la misma función con n−1, cambiando los roles de los postes. Cada llamada resuelve un problema más chico hasta llegar al caso base.</p>
+
+<div class="card" style="margin-top:16px">
+<div class="row">
+  <label for="nsel">Discos:</label>
+  <select id="nsel"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select>
+  <button id="mPlay" class="on">Jugar yo</button>
+  <button id="mStep">Ver la recursión</button>
+  <button id="bReset">Reiniciar</button>
+</div>
+
+<div id="towers" class="towers" role="group" aria-label="Torres"></div>
+<div class="stats"><span>Movimientos: <b id="cnt">0</b></span><span>Mínimo posible: <b id="min">7</b></span></div>
+
+<div id="playBox">
+  <p id="msg">Toca un poste para seleccionar su disco de arriba y luego toca el poste destino.</p>
+</div>
+
+<div id="stepBox" hidden>
+  <div class="row">
+    <button id="bBack">Atrás</button>
+    <button id="bNext" class="on">Siguiente</button>
+    <button id="bAuto">Reproducir</button>
+  </div>
+  <p id="why" aria-live="polite"></p>
+  <div class="explain">
+    <div>
+      <p style="margin:0 0 6px;font-weight:700">Algoritmo (línea activa)</p>
+      <div class="algo" id="algo">
+        <div>si n == 0: regresar          // caso base</div>
+        <div>resolver(n-1, origen, aux, destino)</div>
+        <div>mover(origen, destino)</div>
+        <div>resolver(n-1, aux, destino, origen)</div>
+      </div>
+    </div>
+    <div>
+      <p style="margin:0 0 6px;font-weight:700">Pila de llamadas</p>
+      <div id="stack"></div>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+
+<section id="d">
+<h2>D. Código </h2>
+<pre class="code">public void resolver(int n, int origen, int destino, int auxiliar)
+        throws InterruptedException {
+    if (n == 0) {                                  // caso base
+        return;
+    }
+    resolver(n - 1, origen, auxiliar, destino);    // 1) apartar n-1
+    mover(origen, destino);                        // 2) mover el más grande
+    resolver(n - 1, auxiliar, destino, origen);    // 3) volver a poner n-1
+}
+
+// Llamada inicial: A -&gt; C usando B
+panel.resolver(NUM_DISCOS, 0, 2, 1);</pre>
+<h3 style="margin:22px 0 6px">Cómo funciona este código</h3>
+<p><b>Los parámetros:</b> <code>n</code> es cuántos discos hay que mover; <code>origen</code>, <code>destino</code> y <code>auxiliar</code> son los postes (0 = A, 1 = B, 2 = C). Lo importante es que los postes son <i>roles</i>, no nombres fijos: en cada llamada cambian de papel.</p>
+<ol class="rules">
+<li><code>if (n == 0) return;</code> es el caso base. Si no hay discos, no hace nada y regresa. Gracias a esta línea la recursión termina.</li>
+<li><code>resolver(n - 1, origen, auxiliar, destino)</code> es la primera llamada recursiva. Pide que alguien (la misma función) mueva los n−1 discos de arriba hacia el poste auxiliar. Fíjate que el auxiliar toma el lugar del destino.</li>
+<li><code>mover(origen, destino)</code> mueve un solo disco, el más grande, que ya quedó libre. Es el único momento en que algo se mueve de verdad (se actualiza la lista, se cuenta el movimiento y se dibuja).</li>
+<li><code>resolver(n - 1, auxiliar, destino, origen)</code> es la segunda llamada recursiva. Lleva los n−1 discos desde el auxiliar hasta encima del disco grande. Ahora el origen original hace de auxiliar.</li>
+</ol>
+<p class="big">La función nunca sabe cómo mover muchos discos. Solo sabe mover uno y confiar en que la misma función resuelva el problema con un disco menos.</p>
+
+<h3 style="margin:22px 0 6px">Traza con 2 discos</h3>
+<p>Así se ejecutan las llamadas de <code>resolver(2, 0, 2, 1)</code>, es decir, de A a C usando B. Cada nivel de sangría es una llamada más profunda en la pila:</p>
+<pre class="code">resolver(2, A, C, B)
+  resolver(1, A, B, C)            // 1ª llamada: apartar el disco 1
+    resolver(0, A, C, B)          // caso base, regresa
+    mover A -&gt; B  (disco 1)
+    resolver(0, C, B, A)          // caso base, regresa
+  mover A -&gt; C  (disco 2)         // el grande llega a su destino
+  resolver(1, B, C, A)            // 2ª llamada: traer el disco 1
+    resolver(0, B, A, C)          // caso base, regresa
+    mover B -&gt; C  (disco 1)
+    resolver(0, A, C, B)          // caso base, regresa</pre>
+<p>Son 3 movimientos: A→B, A→C, B→C. Con 3 discos, la primera llamada ya hace esta misma traza de 2 discos, mueve el disco 3 y vuelve a hacerla. Por eso el número de movimientos se duplica (y suma 1) con cada disco nuevo. Puedes verlo en vivo arriba, en «Ver la recursión».</p>
+</section>
+
+<section id="e">
+<h2>E. Prueba de que funciona</h2>
+<p>Se necesita siempre <b>2ⁿ − 1</b> movimientos como mínimo. Esta tabla ejecuta la recursión de verdad en tu navegador, respeta las reglas en cada movimiento y comprueba que al final todos los discos quedan en C.</p>
+<div class="card tw">
+<table>
+<thead><tr><th>Discos (n)</th><th>2ⁿ − 1 esperado</th><th>Movimientos hechos</th><th>Reglas respetadas</th><th>Resultado</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<p>Por qué sale 2ⁿ − 1: T(0) = 0 y T(n) = 2·T(n−1) + 1, porque hay dos llamadas con n−1 y un movimiento en medio.</p>
+</section>
+
+<footer>Gracias : )</footer>
+</main>
+
+<script src="Hanoi.js"></script>
+</body>
+</html>
