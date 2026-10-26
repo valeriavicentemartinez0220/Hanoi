@@ -368,3 +368,20 @@ footer {
   color:var(--mut);
   font-size:.9rem
 }
+
+.figura {
+  margin: 12px 0 0;
+}
+
+.figura img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.figura figcaption {
+  margin-top: 8px;
+  color: var(--mut);
+  font-size: .9rem;
+}

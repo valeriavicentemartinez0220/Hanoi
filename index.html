@@ -12,7 +12,7 @@
 <h1>La recursividad en las torres de Hanoi</h1>
 <p class="lead">INTEGRANTES: Valeria Vicente, Aleph de Jesus, Edwin Jafet.</p>
 <nav>
-  <a href="#a">A. Problema</a><a href="#b">B. Caso base</a><a href="#c">C. Recursión</a><a href="#d">D. Código</a><a href="#e">E. Prueba</a>
+  <a href="#a">A. Problema</a><a href="#b">B. Caso base</a><a href="#c">C. Recursividad</a><a href="#d">D. Código</a><a href="#e">E. Prueba</a><a href="#f">F. Ejemplo con 4 discos</a>
 </nav>
 
 <section id="a">
@@ -66,10 +66,10 @@
     <div>
       <p style="margin:0 0 6px;font-weight:700">Algoritmo (línea activa)</p>
       <div class="algo" id="algo">
-        <div>si n == 0: regresar          // caso base</div>
-        <div>resolver(n-1, origen, aux, destino)</div>
+        <div>si n == 0: regresar</div>
+        <div>hanoiRecursivo(n-1, origen, aux, destino)</div>
         <div>mover(origen, destino)</div>
-        <div>resolver(n-1, aux, destino, origen)</div>
+        <div>hanoiRecursivo(n-1, aux, destino, origen)</div>
       </div>
     </div>
     <div>
@@ -83,14 +83,15 @@
 
 <section id="d">
 <h2>D. Código </h2>
+
 <pre class="code">public void resolver(int n, int origen, int destino, int auxiliar)
         throws InterruptedException {
-    if (n == 0) {                                  // caso base
+    if (n == 0) {
         return;
     }
-    resolver(n - 1, origen, auxiliar, destino);    // 1) apartar n-1
-    mover(origen, destino);                        // 2) mover el más grande
-    resolver(n - 1, auxiliar, destino, origen);    // 3) volver a poner n-1
+    resolver(n - 1, origen, auxiliar, destino);
+    mover(origen, destino);
+    resolver(n - 1, auxiliar, destino, origen);
 }
 
 // Llamada inicial: A -&gt; C usando B
@@ -108,33 +109,36 @@ panel.resolver(NUM_DISCOS, 0, 2, 1);</pre>
 <h3 style="margin:22px 0 6px">Traza con 2 discos</h3>
 <p>Así se ejecutan las llamadas de <code>resolver(2, 0, 2, 1)</code>, es decir, de A a C usando B. Cada nivel de sangría es una llamada más profunda en la pila:</p>
 <pre class="code">resolver(2, A, C, B)
-  resolver(1, A, B, C)            // 1ª llamada: apartar el disco 1
-    resolver(0, A, C, B)          // caso base, regresa
+  resolver(1, A, B, C)            
+    resolver(0, A, C, B)          
     mover A -&gt; B  (disco 1)
-    resolver(0, C, B, A)          // caso base, regresa
-  mover A -&gt; C  (disco 2)         // el grande llega a su destino
-  resolver(1, B, C, A)            // 2ª llamada: traer el disco 1
-    resolver(0, B, A, C)          // caso base, regresa
+    resolver(0, C, B, A)          
+  mover A -&gt; C  (disco 2)       
+  resolver(1, B, C, A)            
+    resolver(0, B, A, C)         
     mover B -&gt; C  (disco 1)
-    resolver(0, A, C, B)          // caso base, regresa</pre>
+    resolver(0, A, C, B)</pre>
 <p>Son 3 movimientos: A→B, A→C, B→C. Con 3 discos, la primera llamada ya hace esta misma traza de 2 discos, mueve el disco 3 y vuelve a hacerla. Por eso el número de movimientos se duplica (y suma 1) con cada disco nuevo. Puedes verlo en vivo arriba, en «Ver la recursión».</p>
 </section>
 
 <section id="e">
-<h2>E. Prueba de que funciona</h2>
-<p>Se necesita siempre <b>2ⁿ − 1</b> movimientos como mínimo. Esta tabla ejecuta la recursión de verdad en tu navegador, respeta las reglas en cada movimiento y comprueba que al final todos los discos quedan en C.</p>
+<h2>E. Prueba</h2>
 <div class="card tw">
 <table>
 <thead><tr><th>Discos (n)</th><th>2ⁿ − 1 esperado</th><th>Movimientos hechos</th><th>Reglas respetadas</th><th>Resultado</th></tr></thead>
 <tbody id="tbody"></tbody>
 </table>
 </div>
-<p>Por qué sale 2ⁿ − 1: T(0) = 0 y T(n) = 2·T(n−1) + 1, porque hay dos llamadas con n−1 y un movimiento en medio.</p>
 </section>
 
-<footer>Gracias : )</footer>
-</main>
+<section id="f">
+<h2>F. Ejemplo con 4 discos</h2>
+<figure class="figura">
+  <img src="hanoi4.png" alt="ALGORITMO CON CUATRO DISCOS">
+</figure>
+</section>
 
+</main>
 <script src="Hanoi.js"></script>
 </body>
 </html>
