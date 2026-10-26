@@ -23,21 +23,20 @@
 <li>Solo se puede mover el disco de arriba de un poste.</li>
 <li>Nunca se coloca un disco grande sobre uno más pequeño.</li>
 </ul>
-<p>Pregunta clave: ¿cómo se resuelve con n discos sin saber de antemano todos los movimientos?</p>
 </section>
 
 <section id="b">
 <h2>B. Caso base</h2>
 <p>Toda recursión necesita un punto donde se detiene. Aquí es el problema más pequeño posible: <b>n = 0</b>, es decir, cero discos. No hay nada que mover, así que la función simplemente regresa.</p>
 <p class="big">Sin caso base la función se llamaría para siempre y el programa se rompería con un StackOverflowError.</p>
-<p>Con un solo disco (n = 1) tampoco hay misterio: se mueve directo de origen a destino. Internamente, lo hace llamando dos veces al caso base y moviendo en medio.</p>
 </section>
 
 <section id="c">
 <h2>C. Cómo funciona el método recursivo</h2>
 <p>La idea: para mover n discos de origen a destino, se reduce a un problema igual pero con un disco menos.</p>
 <p class="big">1) Mueve los n−1 discos de arriba al poste auxiliar.<br>2) Mueve el disco más grande al destino.<br>3) Mueve los n−1 discos del auxiliar al destino.</p>
-<p>Los pasos 1 y 3 son la misma función con n−1, cambiando los roles de los postes. Cada llamada resuelve un problema más chico hasta llegar al caso base.</p>
+<p>-Los pasos 1 y 3 son la misma función con n−1, cambiando los roles de los postes.</p>
+<p>-Cada llamada resuelve un problema más chico hasta llegar al caso base.</p>
 
 <div class="card" style="margin-top:16px">
 <div class="row">
@@ -96,18 +95,17 @@
 
 // Llamada inicial: A -&gt; C usando B
 panel.resolver(NUM_DISCOS, 0, 2, 1);</pre>
-<h3 style="margin:22px 0 6px">Cómo funciona este código</h3>
-<p><b>Los parámetros:</b> <code>n</code> es cuántos discos hay que mover; <code>origen</code>, <code>destino</code> y <code>auxiliar</code> son los postes (0 = A, 1 = B, 2 = C). Lo importante es que los postes son <i>roles</i>, no nombres fijos: en cada llamada cambian de papel.</p>
+<h3 style="margin:22px 0 6px">Como funciona:</h3>
+<p><b>Parámetros:</b> <code>n</code> es cuántos discos hay que mover; <code>origen</code>, <code>destino</code> y <code>auxiliar</code> son los postes (0 = A, 1 = B, 2 = C). Lo importante es que los postes son <i>roles</i>, no nombres fijos: en cada llamada cambian de papel.</p>
 <ol class="rules">
 <li><code>if (n == 0) return;</code> es el caso base. Si no hay discos, no hace nada y regresa. Gracias a esta línea la recursión termina.</li>
 <li><code>resolver(n - 1, origen, auxiliar, destino)</code> es la primera llamada recursiva. Pide que alguien (la misma función) mueva los n−1 discos de arriba hacia el poste auxiliar. Fíjate que el auxiliar toma el lugar del destino.</li>
 <li><code>mover(origen, destino)</code> mueve un solo disco, el más grande, que ya quedó libre. Es el único momento en que algo se mueve de verdad (se actualiza la lista, se cuenta el movimiento y se dibuja).</li>
 <li><code>resolver(n - 1, auxiliar, destino, origen)</code> es la segunda llamada recursiva. Lleva los n−1 discos desde el auxiliar hasta encima del disco grande. Ahora el origen original hace de auxiliar.</li>
 </ol>
-<p class="big">La función nunca sabe cómo mover muchos discos. Solo sabe mover uno y confiar en que la misma función resuelva el problema con un disco menos.</p>
 
-<h3 style="margin:22px 0 6px">Traza con 2 discos</h3>
-<p>Así se ejecutan las llamadas de <code>resolver(2, 0, 2, 1)</code>, es decir, de A a C usando B. Cada nivel de sangría es una llamada más profunda en la pila:</p>
+<h3 style="margin:22px 0 6px">llamadas: ejemplo con 2 discos</h3>
+<p>Así se ejecutan las llamadas de <code>resolver(2, 0, 2, 1)</code>, es decir, de A a C usando B. se hace llamadas a la pila:</p>
 <pre class="code">resolver(2, A, C, B)
   resolver(1, A, B, C)            
     resolver(0, A, C, B)          
@@ -118,14 +116,13 @@ panel.resolver(NUM_DISCOS, 0, 2, 1);</pre>
     resolver(0, B, A, C)         
     mover B -&gt; C  (disco 1)
     resolver(0, A, C, B)</pre>
-<p>Son 3 movimientos: A→B, A→C, B→C. Con 3 discos, la primera llamada ya hace esta misma traza de 2 discos, mueve el disco 3 y vuelve a hacerla. Por eso el número de movimientos se duplica (y suma 1) con cada disco nuevo. Puedes verlo en vivo arriba, en «Ver la recursión».</p>
 </section>
 
 <section id="e">
 <h2>E. Prueba</h2>
 <div class="card tw">
 <table>
-<thead><tr><th>Discos (n)</th><th>2ⁿ − 1 esperado</th><th>Movimientos hechos</th><th>Reglas respetadas</th><th>Resultado</th></tr></thead>
+<thead><tr><th>Discos (n)</th><th>2ⁿ − 1</th><th>Movimientos </th><th>Reglas</th><th>Resultado</th></tr></thead>
 <tbody id="tbody"></tbody>
 </table>
 </div>
