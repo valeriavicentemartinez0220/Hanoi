@@ -83,17 +83,17 @@
 <section id="d">
 <h2>D. Código </h2>
 
-<pre class="code">public void resolver(int n, int origen, int destino, int auxiliar)
+<pre class="code">public void hanoiRecursivo(int n, int origen, int destino, int auxiliar)
         throws InterruptedException {
     if (n == 0) {
         return;
     }
-    resolver(n - 1, origen, auxiliar, destino);
+    hanoiRecursivo(n - 1, origen, auxiliar, destino);
     mover(origen, destino);
-    resolver(n - 1, auxiliar, destino, origen);
+    hanoiRecursivo(n - 1, auxiliar, destino, origen);
 }
 
-panel.resolver(NUM_DISCOS, 0, 2, 1);</pre>
+torres.hanoiRecursivo(NUM_DISCOS, 0, 2, 1);</pre>
 <h3 style="margin:22px 0 6px">Como funciona:</h3>
 <p><b>Parámetros:</b> <code>n</code> es cuántos discos hay que mover; <code>origen</code>, <code>destino</code> y <code>auxiliar</code> son los postes (0 = A, 1 = B, 2 = C). Lo importante es que los postes son <i>roles</i>, no nombres fijos: en cada llamada cambian de papel.</p>
 <ol class="rules">
